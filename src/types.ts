@@ -22,6 +22,9 @@ export type PatchRequestBody = {
 export type EntityId = {
   entityId: string;
 };
+export type Inquiry = {
+  inquiry: string;
+};
 
 export type Entity = Record<string, unknown>;
 

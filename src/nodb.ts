@@ -5,6 +5,7 @@ import {
   Entity,
   EntityId,
   EntityResponse,
+  Inquiry,
   NodbConstructor,
   PatchRequestBody,
   PostRequestBody,
@@ -47,9 +48,7 @@ class Nodb {
   }: BaseAPIProps & PostRequestBody): Promise<string[]> {
     const request = await this.axios.post<string[]>(
       this.generateUrl(urlProps),
-      {
-        data: payload,
-      },
+      payload,
     );
     return request.data;
   }
@@ -68,9 +67,7 @@ class Nodb {
   }: BaseAPIProps & PatchRequestBody): Promise<string[]> {
     const request = await this.axios.patch<string[]>(
       this.generateUrl(urlProps),
-      {
-        data: payload,
-      },
+      payload,
     );
     return request.data;
   }
@@ -90,9 +87,10 @@ class Nodb {
     payload,
     ...urlProps
   }: BaseAPIProps & PatchRequestBody): Promise<string[]> {
-    const request = await this.axios.put<string[]>(this.generateUrl(urlProps), {
-      data: payload,
-    });
+    const request = await this.axios.put<string[]>(
+      this.generateUrl(urlProps),
+      payload,
+    );
     return request.data;
   }
 
@@ -131,6 +129,17 @@ class Nodb {
       this.generateUrl(urlProps),
     );
     return request.data;
+  }
+
+  async getInquiry({ inquiry }: Inquiry): Promise<{ answer: string }> {
+    const result = await this.axios.post<{ answer: string }>(
+      `/knowledgebase/${this.app}/${this.env}`,
+      {
+        query: inquiry,
+      },
+    );
+
+    return result.data;
   }
 }
 
