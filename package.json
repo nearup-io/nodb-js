@@ -6,12 +6,16 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup index.ts --format cjs,esm --dts"
+    "build": "tsup src/index.ts --format cjs,esm --dts"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.7",
+    "@types/node": "^20.14.9",
     "prettier": "^3.3.2",
     "tsup": "^8.1.0",
     "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "axios": "^1.7.2"
   }
 }
