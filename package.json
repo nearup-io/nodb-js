@@ -1,13 +1,37 @@
 {
-  "name": "nodb-js",
-  "license": "MIT",
+  "name": "nodb",
   "version": "0.0.1",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts"
+  "changeset": "changeset",
+  "description": "Nodb API",
+  "homepage": "https://github.com/nearup-io/nodb-js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nearup-io/nodb-js.git"
   },
+  "files": ["dist"],
+  "type": "module",
+  "main": "dist/nodb.js",
+  "module": "dist/nodb.mjs",
+  "types": "dist/nodb.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/nodb.d.ts",
+      "import": "./dist/nodb.js",
+      "require": "./dist/nodb.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/nodb.ts --format cjs,esm --dts --sourcemap --minify",
+    "lint": "tsc"
+  },
+  "keywords": [
+    "nodb"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "NearUp Software & Consultation GmbH",
+  "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.27.7",
     "@types/node": "^20.14.9",
