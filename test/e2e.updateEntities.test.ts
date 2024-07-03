@@ -7,9 +7,12 @@ import path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../.env.test") });
 
 describe("Nodb update entities/entity tests", () => {
+  const app = process.env.NODB_APP!;
+  const env = process.env.NODB_ENV!;
+
   const nodb = new Nodb({
-    app: process.env.NODB_APP!,
-    env: process.env.NODB_ENV!,
+    app,
+    env,
     baseUrl: process.env.NODB_BASE_URL!,
     token: process.env.NODB_JWT_TOKEN!,
   });
@@ -45,14 +48,59 @@ describe("Nodb update entities/entity tests", () => {
     expect(result.length).toBe(2);
     expect(result[0]).toBe(ids[0]);
     expect(result[1]).toBe(ids[1]);
+
+    const projectPhoenixId = result[0]!;
+    const projectPegasusId = result[1]!;
+
+    // get what's in db so we could verify it
+    const insertedProjectPhoenix = await nodb.getEntity({
+      entityName,
+      entityId: projectPhoenixId,
+    });
+
+    expect(insertedProjectPhoenix).toStrictEqual({
+      ...projectPhoenix,
+      id: projectPhoenixId,
+      title: "Project Phoenix V2",
+      __meta: {
+        self: `/${app}/${env}/${entityName}/${projectPhoenixId}`,
+      },
+    });
+
+    const insertedProjectPegasus = await nodb.getEntity({
+      entityName,
+      entityId: projectPegasusId,
+    });
+
+    expect(insertedProjectPegasus).toStrictEqual({
+      ...projectPegasus,
+      id: projectPegasusId,
+      title: "Project Pegasus V2",
+      __meta: {
+        self: `/${app}/${env}/${entityName}/${projectPegasusId}`,
+      },
+    });
   });
 
   test("should update entity", async () => {
-    const result = await nodb.updateEntity({
+    const insertedProjectId = await nodb.updateEntity({
       entityName,
       payload: { title: "Project Titan V2", id: ids[2]! },
     });
 
-    expect(result).toBe(ids[2]);
+    expect(insertedProjectId).toBe(ids[2]);
+    const insertedProjectTitan = await nodb.getEntity({
+      entityName,
+      entityId: insertedProjectId,
+    });
+
+    expect(insertedProjectTitan).toStrictEqual({
+      ...projectTitan,
+      id: insertedProjectId,
+      title: "Project Titan V2",
+      __meta: {
+        self: `/${app}/${env}/${entityName}/${insertedProjectId}`,
+      },
+    });
   });
 });
