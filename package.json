@@ -8,7 +8,9 @@
     "type": "git",
     "url": "https://github.com/nearup-io/nodb-js.git"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "dist/nodb.js",
   "module": "dist/nodb.mjs",
@@ -22,6 +24,7 @@
   },
   "scripts": {
     "build": "tsup src/nodb.ts --format cjs,esm --dts --sourcemap --minify",
+    "test": "jest",
     "lint": "tsc"
   },
   "keywords": [
@@ -34,12 +37,17 @@
   "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.27.7",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.14.9",
+    "jest": "^29.7.0",
     "prettier": "^3.3.2",
+    "ts-jest": "^29.1.5",
+    "ts-node": "^10.9.2",
     "tsup": "^8.1.0",
     "typescript": "^5.5.3"
   },
   "dependencies": {
-    "axios": "^1.7.2"
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5"
   }
 }

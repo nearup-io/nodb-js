@@ -11,7 +11,7 @@ import {
   PostRequestBody,
 } from "./types";
 import { NodbError } from "./errors";
-import { Axios } from "axios";
+import axios, { Axios } from "axios";
 
 class Nodb {
   private readonly app: string;
@@ -24,7 +24,7 @@ class Nodb {
     }
     this.app = app;
     this.env = env;
-    this.axios = new Axios({
+    this.axios = axios.create({
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -42,40 +42,38 @@ class Nodb {
     return `${baseUrl}/${entityId}`;
   }
 
-  async writeEntities({
-    payload,
-    ...urlProps
-  }: BaseAPIProps & PostRequestBody): Promise<string[]> {
-    const request = await this.axios.post<string[]>(
+  async writeEntities(
+    props: BaseAPIProps & PostRequestBody,
+  ): Promise<string[]> {
+    const { payload, ...urlProps } = props;
+    const response = await this.axios.post<{ ids: string[] }>(
       this.generateUrl(urlProps),
       payload,
     );
-    return request.data;
+    return response.data.ids;
   }
 
-  async writeEntity({
-    payload,
-    ...urlProps
-  }: BaseAPIProps & { payload: Body }): Promise<string> {
+  async writeEntity(props: BaseAPIProps & { payload: Body }): Promise<string> {
+    const { payload, ...urlProps } = props;
     const [id] = await this.writeEntities({ ...urlProps, payload: [payload] });
     return id!;
   }
 
-  async updateEntities({
-    payload,
-    ...urlProps
-  }: BaseAPIProps & PatchRequestBody): Promise<string[]> {
-    const request = await this.axios.patch<string[]>(
+  async updateEntities(
+    props: BaseAPIProps & PatchRequestBody,
+  ): Promise<string[]> {
+    const { payload, ...urlProps } = props;
+    const response = await this.axios.patch<{ ids: string[] }>(
       this.generateUrl(urlProps),
       payload,
     );
-    return request.data;
+    return response.data.ids;
   }
 
-  async updateEntity({
-    payload,
-    ...urlProps
-  }: BaseAPIProps & { payload: BodyWithId }): Promise<string> {
+  async updateEntity(
+    props: BaseAPIProps & { payload: BodyWithId },
+  ): Promise<string> {
+    const { payload, ...urlProps } = props;
     const [id] = await this.updateEntities({
       ...urlProps,
       payload: [payload],
@@ -83,21 +81,21 @@ class Nodb {
     return id!;
   }
 
-  async replaceEntities({
-    payload,
-    ...urlProps
-  }: BaseAPIProps & PatchRequestBody): Promise<string[]> {
-    const request = await this.axios.put<string[]>(
+  async replaceEntities(
+    props: BaseAPIProps & PatchRequestBody,
+  ): Promise<string[]> {
+    const { payload, ...urlProps } = props;
+    const request = await this.axios.put<{ ids: string[] }>(
       this.generateUrl(urlProps),
       payload,
     );
-    return request.data;
+    return request.data.ids;
   }
 
-  async replaceEntity({
-    payload,
-    ...urlProps
-  }: BaseAPIProps & { payload: BodyWithId }): Promise<string> {
+  async replaceEntity(
+    props: BaseAPIProps & { payload: BodyWithId },
+  ): Promise<string> {
+    const { payload, ...urlProps } = props;
     const [id] = await this.replaceEntities({
       ...urlProps,
       payload: [payload],
@@ -131,7 +129,8 @@ class Nodb {
     return request.data;
   }
 
-  async getInquiry({ inquiry }: Inquiry): Promise<{ answer: string }> {
+  async getInquiry(props: Inquiry): Promise<{ answer: string }> {
+    const { inquiry } = props;
     const result = await this.axios.post<{ answer: string }>(
       `/knowledgebase/${this.app}/${this.env}`,
       {
