@@ -6,7 +6,7 @@ import path from "path";
 // Load environment variables from .env.test
 dotenv.config({ path: path.resolve(__dirname, "../.env.test") });
 
-describe("Write entities test", () => {
+describe("Nodb write entities/entity tests ", () => {
   const app = process.env.NODB_APP!;
   const env = process.env.NODB_ENV!;
 
