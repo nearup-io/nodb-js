@@ -24,7 +24,7 @@
   },
   "scripts": {
     "build": "tsup src/nodb.ts --format cjs,esm --dts --sourcemap --minify",
-    "test": "jest",
+    "test": "jest --runInBand",
     "lint": "tsc"
   },
   "keywords": [
