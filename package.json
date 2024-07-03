@@ -25,6 +25,7 @@
   "scripts": {
     "build": "tsup src/nodb.ts --format cjs,esm --dts --sourcemap --minify",
     "test": "jest --runInBand",
+    "release": "pnpm run build && changeset publish",
     "lint": "tsc"
   },
   "keywords": [
