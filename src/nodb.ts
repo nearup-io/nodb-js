@@ -11,7 +11,7 @@ import {
   PostRequestBody,
 } from "./types";
 import { NodbError } from "./errors";
-import axios, { Axios } from "axios";
+import axios, { Axios, AxiosError } from "axios";
 
 class Nodb {
   private readonly app: string;
@@ -31,6 +31,16 @@ class Nodb {
       },
       baseURL: baseUrl,
     });
+
+    this.axios.interceptors.response.use(
+      (response) => response,
+      (error: AxiosError) => {
+        if (error.response && error.response.status >= 400) {
+          throw new NodbError(error.response.data as string);
+        }
+        return Promise.reject(error);
+      },
+    );
   }
 
   private generateUrl({
