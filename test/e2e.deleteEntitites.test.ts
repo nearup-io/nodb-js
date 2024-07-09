@@ -8,14 +8,11 @@ import { NodbError } from "../src/errors";
 dotenv.config({ path: path.resolve(__dirname, "../.env.test") });
 
 describe("Nodb delete entities/entity tests", () => {
-  const app = process.env.NODB_APP!;
-  const env = process.env.NODB_ENV!;
+  const appName = "test-app";
+  const envName = "test-env";
 
   const nodb = new Nodb({
-    app,
-    env,
     baseUrl: process.env.NODB_BASE_URL!,
-    token: process.env.NODB_JWT_TOKEN!,
   });
 
   const entityName = "testProject";
@@ -23,24 +20,34 @@ describe("Nodb delete entities/entity tests", () => {
   let ids: string[] = [];
 
   beforeAll(async () => {
+    const result = await nodb.createAppWithEnvironmentAndGetTokens({
+      appName,
+      environmentName: envName,
+    });
+
+    nodb.setToken(result.applicationTokens[0]!.key);
+
     ids = await nodb.writeEntities({
       entityName,
+      appName,
+      envName,
       payload: [projectPhoenix, projectPegasus],
     });
     const lastId = await nodb.writeEntity({
       entityName: entityName2,
+      appName,
+      envName,
       payload: projectTitan,
     });
     ids.push(lastId);
   });
 
   afterAll(async () => {
-    await nodb.deleteEntities({ entityName });
-    await nodb.deleteEntities({ entityName: entityName2 });
+    await nodb.deleteApplication({ appName });
   });
 
   test("should delete entities", async () => {
-    const result = await nodb.deleteEntities({ entityName });
+    const result = await nodb.deleteEntities({ entityName, appName, envName });
 
     expect(result).toBe(2);
 
@@ -50,6 +57,8 @@ describe("Nodb delete entities/entity tests", () => {
     await expect(
       nodb.getEntity({
         entityName,
+        appName,
+        envName,
         entityId: projectPhoenixId,
       }),
     ).rejects.toThrow(NodbError);
@@ -57,6 +66,8 @@ describe("Nodb delete entities/entity tests", () => {
     await expect(
       nodb.getEntity({
         entityName,
+        appName,
+        envName,
         entityId: projectPegasusId,
       }),
     ).rejects.toThrow(NodbError);
@@ -65,6 +76,8 @@ describe("Nodb delete entities/entity tests", () => {
   test("should delete entity", async () => {
     const deleted = await nodb.deleteEntity({
       entityName: entityName2,
+      appName,
+      envName,
       entityId: ids[2]!,
     });
 
@@ -72,6 +85,8 @@ describe("Nodb delete entities/entity tests", () => {
     await expect(
       nodb.getEntity({
         entityName,
+        appName,
+        envName,
         entityId: ids[2]!,
       }),
     ).rejects.toThrow(NodbError);

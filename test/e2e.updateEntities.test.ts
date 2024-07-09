@@ -7,38 +7,48 @@ import path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../.env.test") });
 
 describe("Nodb update entities/entity tests", () => {
-  const app = process.env.NODB_APP!;
-  const env = process.env.NODB_ENV!;
+  const appName = "test-app";
+  const envName = "test-env";
 
   const nodb = new Nodb({
-    app,
-    env,
     baseUrl: process.env.NODB_BASE_URL!,
-    token: process.env.NODB_JWT_TOKEN!,
   });
 
   const entityName = "testProject";
   let ids: string[] = [];
 
   beforeAll(async () => {
+    const result = await nodb.createAppWithEnvironmentAndGetTokens({
+      appName,
+      environmentName: envName,
+    });
+
+    nodb.setToken(result.applicationTokens[0]!.key);
+
     ids = await nodb.writeEntities({
       entityName,
+      appName,
+      envName,
       payload: [projectPhoenix, projectPegasus],
     });
     const lastId = await nodb.writeEntity({
       entityName,
+      appName,
+      envName,
       payload: projectTitan,
     });
     ids.push(lastId);
   });
 
   afterAll(async () => {
-    await nodb.deleteEntities({ entityName });
+    await nodb.deleteApplication({ appName });
   });
 
   test("should update entities", async () => {
     const result = await nodb.updateEntities({
       entityName,
+      appName,
+      envName,
       payload: [
         { title: "Project Phoenix V2", id: ids[0]! },
         { title: "Project Pegasus V2", id: ids[1]! },
@@ -55,6 +65,8 @@ describe("Nodb update entities/entity tests", () => {
     // get what's in db so we could verify it
     const insertedProjectPhoenix = await nodb.getEntity({
       entityName,
+      appName,
+      envName,
       entityId: projectPhoenixId,
     });
 
@@ -63,12 +75,14 @@ describe("Nodb update entities/entity tests", () => {
       id: projectPhoenixId,
       title: "Project Phoenix V2",
       __meta: {
-        self: `/${app}/${env}/${entityName}/${projectPhoenixId}`,
+        self: `/${appName}/${envName}/${entityName}/${projectPhoenixId}`,
       },
     });
 
     const insertedProjectPegasus = await nodb.getEntity({
       entityName,
+      appName,
+      envName,
       entityId: projectPegasusId,
     });
 
@@ -77,7 +91,7 @@ describe("Nodb update entities/entity tests", () => {
       id: projectPegasusId,
       title: "Project Pegasus V2",
       __meta: {
-        self: `/${app}/${env}/${entityName}/${projectPegasusId}`,
+        self: `/${appName}/${envName}/${entityName}/${projectPegasusId}`,
       },
     });
   });
@@ -85,12 +99,16 @@ describe("Nodb update entities/entity tests", () => {
   test("should update entity", async () => {
     const insertedProjectId = await nodb.updateEntity({
       entityName,
+      appName,
+      envName,
       payload: { title: "Project Titan V2", id: ids[2]! },
     });
 
     expect(insertedProjectId).toBe(ids[2]);
     const insertedProjectTitan = await nodb.getEntity({
       entityName,
+      appName,
+      envName,
       entityId: insertedProjectId,
     });
 
@@ -99,7 +117,7 @@ describe("Nodb update entities/entity tests", () => {
       id: insertedProjectId,
       title: "Project Titan V2",
       __meta: {
-        self: `/${app}/${env}/${entityName}/${insertedProjectId}`,
+        self: `/${appName}/${envName}/${entityName}/${insertedProjectId}`,
       },
     });
   });

@@ -7,14 +7,11 @@ import path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../.env.test") });
 
 describe("Nodb get entities/entity tests", () => {
-  const app = process.env.NODB_APP!;
-  const env = process.env.NODB_ENV!;
+  const appName = "test-app";
+  const envName = "test-env";
 
   const nodb = new Nodb({
-    app,
-    env,
     baseUrl: process.env.NODB_BASE_URL!,
-    token: process.env.NODB_JWT_TOKEN!,
   });
 
   const entityName = "testProject";
@@ -22,30 +19,42 @@ describe("Nodb get entities/entity tests", () => {
   let ids: string[] = [];
 
   beforeAll(async () => {
+    const result = await nodb.createAppWithEnvironmentAndGetTokens({
+      appName,
+      environmentName: envName,
+    });
+
+    nodb.setToken(result.applicationTokens[0]!.key);
+
     ids = await nodb.writeEntities({
       entityName,
+      appName,
+      envName,
       payload: [projectPhoenix, projectPegasus],
     });
     const lastId = await nodb.writeEntity({
       entityName: entityName2,
+      appName,
+      envName,
       payload: projectTitan,
     });
     ids.push(lastId);
   });
 
   afterAll(async () => {
-    await nodb.deleteEntities({ entityName });
-    await nodb.deleteEntities({ entityName: entityName2 });
+    await nodb.deleteApplication({ appName });
   });
 
   test("should get entities", async () => {
     const result = await nodb.getEntities({
       entityName,
+      appName,
+      envName,
     });
 
     expect(Object.keys(result).sort()).toEqual([entityName, "__meta"].sort());
     expect(result["__meta"]).toStrictEqual({
-      current_page: `/${app}/${env}/${entityName}?__page=1&__per_page=10`,
+      current_page: `/${appName}/${envName}/${entityName}?__page=1&__per_page=10`,
       items: 2,
       page: 1,
       pages: 1,
@@ -61,7 +70,7 @@ describe("Nodb get entities/entity tests", () => {
     expect(first).toStrictEqual({
       ...projectPhoenix,
       __meta: {
-        self: `/${app}/${env}/${entityName}/${ids[0]}`,
+        self: `/${appName}/${envName}/${entityName}/${ids[0]}`,
       },
       id: ids[0],
     });
@@ -69,7 +78,7 @@ describe("Nodb get entities/entity tests", () => {
     expect(second).toStrictEqual({
       ...projectPegasus,
       __meta: {
-        self: `/${app}/${env}/${entityName}/${ids[1]}`,
+        self: `/${appName}/${envName}/${entityName}/${ids[1]}`,
       },
       id: ids[1],
     });
@@ -78,6 +87,8 @@ describe("Nodb get entities/entity tests", () => {
   test("should get entity", async () => {
     const entity = await nodb.getEntity({
       entityName: entityName2,
+      appName,
+      envName,
       entityId: ids[2]!,
     });
 
@@ -85,7 +96,7 @@ describe("Nodb get entities/entity tests", () => {
       ...projectTitan,
       id: ids[2]!,
       __meta: {
-        self: `/${app}/${env}/${entityName2}/${ids[2]}`,
+        self: `/${appName}/${envName}/${entityName2}/${ids[2]}`,
       },
     });
   });
