@@ -1,22 +1,23 @@
 export type NodbConstructor = {
-  app: string;
-  env: string;
-  token: string;
+  token?: string;
   baseUrl: string;
 };
 
 export type BaseAPIProps = {
+  appName: string;
+  envName: string;
   entityName: string;
+  token?: string;
 };
 
-export type Body = Record<string, unknown>;
+export type EntityBody = Record<string, unknown>;
 
-export type PostRequestBody = { payload: Body[] };
+export type PostEntityRequestBody = { payload: EntityBody[] };
 
-export type BodyWithId = Record<string, unknown> & { id: string };
+export type EntityBodyWithId = Record<string, unknown> & { id: string };
 
 export type PatchRequestBody = {
-  payload: BodyWithId[];
+  payload: EntityBodyWithId[];
 };
 
 export type EntityId = {
@@ -45,3 +46,15 @@ export type EntitiesMeta = {
 export type EntityResponse = {
   [entityName: string]: Entity[];
 } & { __meta: EntitiesMeta };
+
+export type Token = {
+  key: string;
+  permission: "ALL" | "READ_ONLY";
+};
+
+export type PostApplicationResponse = {
+  applicationName: string;
+  environmentName: string;
+  applicationTokens: Token[];
+  environmentTokens: Token[];
+};
