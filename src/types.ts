@@ -58,3 +58,26 @@ export type PostApplicationResponse = {
   applicationTokens: Token[];
   environmentTokens: Token[];
 };
+
+export type PostApplicationBody = {
+  appName: string;
+  appDescription?: string;
+  appImage?: string;
+  environmentName?: string;
+  environmentDescription?: string;
+};
+
+export type PostEnvironmentResponse = {
+  id: string;
+  name: string;
+  tokens: Token[];
+  description?: string;
+  entities: string[];
+};
+
+export type PostEnvironmentBody = {
+  appName: string;
+  environmentName: string;
+  description?: string;
+  token?: string;
+};

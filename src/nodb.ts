@@ -8,8 +8,11 @@ import {
   Inquiry,
   NodbConstructor,
   PatchRequestBody,
+  PostApplicationBody,
   PostApplicationResponse,
   PostEntityRequestBody,
+  PostEnvironmentBody,
+  PostEnvironmentResponse,
 } from "./types";
 import { NodbError } from "./errors";
 import axios, { Axios, AxiosError } from "axios";
@@ -186,13 +189,9 @@ class Nodb {
     return result.data;
   }
 
-  async createAppWithEnvironmentAndGetTokens(props: {
-    appName: string;
-    appDescription?: string;
-    appImage?: string;
-    environmentName?: string;
-    environmentDescription?: string;
-  }): Promise<PostApplicationResponse> {
+  async createAppWithEnvironmentAndGetTokens(
+    props: PostApplicationBody,
+  ): Promise<PostApplicationResponse> {
     const {
       appName,
       appImage,
@@ -214,15 +213,12 @@ class Nodb {
     return result.data;
   }
 
-  async createEnvironmentInApp(props: {
-    appName: string;
-    environmentName: string;
-    description?: string;
-    token?: string;
-  }): Promise<PostApplicationResponse> {
+  async createEnvironmentInApp(
+    props: PostEnvironmentBody,
+  ): Promise<PostEnvironmentResponse> {
     const { appName, description, environmentName, token } = props;
 
-    const result = await this.axios.post<PostApplicationResponse>(
+    const result = await this.axios.post<PostEnvironmentResponse>(
       `/apps/${appName}/${environmentName}`,
       {
         description,
