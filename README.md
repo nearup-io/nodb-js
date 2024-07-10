@@ -148,7 +148,12 @@ The response returned from inquire method has the following definition:
 }
 ```
 ## Testing
-We are using jest to run e2e tests. You can run them with 
+We are using jest to run e2e tests. You can run them with
 ```javascript
 npm run test
 ```
+For testing we have a .env.test file where the only env variable that is specified is:
+```javascript
+NODB_BASE_URL=
+```
+
