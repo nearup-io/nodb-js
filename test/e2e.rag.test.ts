@@ -35,7 +35,7 @@ describe("Nodb rag entities tests ", () => {
   });
 
   test("should return some answer", async () => {
-    const result = await nodb.getInquiry({
+    const result = await nodb.inquire({
       appName,
       envName,
       inquiry: "Which projects do I have available?",

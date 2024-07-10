@@ -174,7 +174,7 @@ class Nodb {
     return request.data;
   }
 
-  async getInquiry(
+  async inquire(
     props: Inquiry & Pick<BaseAPIProps, "appName" | "envName" | "token">,
   ): Promise<{ answer: string }> {
     const { inquiry, appName, envName, token } = props;
