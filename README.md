@@ -142,11 +142,11 @@ nodb.inquire({
 }).then(console.log);
 ```
 The response returned from inquire method has the following definition:
-
+```javascript
 {
   answer: "Finishing report has highest priority.";
 }
-
+```
 ## Testing
 We are using jest to run e2e tests. You can run them with 
 ```javascript
