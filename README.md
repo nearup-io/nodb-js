@@ -28,7 +28,7 @@ To begin using NodbSDK, import the Nodb class:
 ```javascript
 import Nodb from "nodb-js";
 //OR
-const Nodb = require("nodb");
+const Nodb = require("nodb-js");
 ```
 If you're using import you should add "type": "module" to package.json.
 You need to create an instance of Nodb now:
