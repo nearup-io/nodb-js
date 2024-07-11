@@ -1,7 +1,7 @@
 # Nodb JS/TS
 
 Our service allows you to store and process unstructured JSON data in a unified database format. Our npm package ensures all data is transformed and stored both as JSON entities and their vector embedding representations, always in-sync.
-The interface for processing JSON data is similar to standard CRUD operations, making it easy to integrate. When you send an unstructured JSON payload via a POST request, the data is seamlessly written to the Farspeak database. This integration allows you to query all your data using natural language immediately.
+The interface for processing JSON data is similar to standard CRUD operations, making it easy to integrate. When you send an unstructured JSON payload via a POST request, the data is seamlessly written to the Nodb database. This integration allows you to query all your data using natural language immediately.
 
 ## Table of Contents
 
