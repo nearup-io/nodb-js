@@ -10,9 +10,12 @@ import {
   PatchRequestBody,
   PostApplicationBody,
   PostApplicationResponse,
+  PostApplicationTokenResponse,
   PostEntityRequestBody,
   PostEnvironmentBody,
   PostEnvironmentResponse,
+  PostEnvironmentTokenResponse,
+  TokenPermissions,
 } from "./types";
 import { NodbError } from "./errors";
 import axios, { Axios, AxiosError } from "axios";
@@ -254,6 +257,70 @@ class Nodb {
     );
 
     return result.data.found;
+  }
+
+  async createApplicationToken(props: {
+    appName: string;
+    permission: TokenPermissions;
+    token?: string;
+  }): Promise<PostApplicationTokenResponse> {
+    const { appName, permission, token } = props;
+    const result = await this.axios.post<PostApplicationTokenResponse>(
+      `/tokens/${appName}`,
+      {
+        permission,
+      },
+      { ...(token && { headers: { token } }) },
+    );
+
+    return result.data;
+  }
+
+  async createEnvironmentToken(props: {
+    appName: string;
+    envName: string;
+    permission: TokenPermissions;
+    token?: string;
+  }): Promise<PostEnvironmentTokenResponse> {
+    const { appName, envName, permission, token } = props;
+    const result = await this.axios.post<PostEnvironmentTokenResponse>(
+      `/tokens/${appName}/${envName}`,
+      {
+        permission,
+      },
+      { ...(token && { headers: { token } }) },
+    );
+
+    return result.data;
+  }
+
+  async revokeApplicationToken(props: {
+    appName: string;
+    tokenToBeRevoked: string;
+    token?: string;
+  }): Promise<boolean> {
+    const { appName, tokenToBeRevoked, token } = props;
+    const result = await this.axios.delete<{ success: boolean }>(
+      `/tokens/${appName}/${tokenToBeRevoked}`,
+      { ...(token && { headers: { token } }) },
+    );
+
+    return result.data.success;
+  }
+
+  async revokeEnvironmentToken(props: {
+    appName: string;
+    envName: string;
+    tokenToBeRevoked: string;
+    token?: string;
+  }): Promise<boolean> {
+    const { appName, envName, tokenToBeRevoked, token } = props;
+    const result = await this.axios.delete<{ success: boolean }>(
+      `/tokens/${appName}/${envName}/${tokenToBeRevoked}`,
+      { ...(token && { headers: { token } }) },
+    );
+
+    return result.data.success;
   }
 }
 

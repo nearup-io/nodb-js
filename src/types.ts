@@ -81,3 +81,15 @@ export type PostEnvironmentBody = {
   description?: string;
   token?: string;
 };
+
+export type TokenPermissions = "ALL" | "READ_ONLY";
+
+export type PostApplicationTokenResponse = {
+  appName: string;
+  permission: TokenPermissions;
+  token: string;
+};
+
+export type PostEnvironmentTokenResponse = PostApplicationTokenResponse & {
+  envName: string;
+};
