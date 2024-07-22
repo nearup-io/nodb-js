@@ -93,3 +93,9 @@ export type PostApplicationTokenResponse = {
 export type PostEnvironmentTokenResponse = PostApplicationTokenResponse & {
   envName: string;
 };
+
+export type EventName = "write" | "update" | "delete";
+
+export interface EventListener<T = any> {
+  (data: T): void | Promise<void>;
+}

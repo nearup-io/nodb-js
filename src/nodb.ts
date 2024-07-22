@@ -19,12 +19,14 @@ import {
 } from "./types";
 import { NodbError } from "./errors";
 import axios, { Axios, AxiosError } from "axios";
+import { NodbEventListener } from "./nodb-event-listener";
 
-class Nodb {
+class Nodb extends NodbEventListener {
   private readonly baseUrl: string;
   private readonly axios: Axios;
 
   constructor({ token, baseUrl }: NodbConstructor) {
+    super();
     if (!baseUrl) {
       throw new NodbError("Missing one of the required dependencies!");
     }
@@ -74,6 +76,7 @@ class Nodb {
         ...(token && { headers: { token } }),
       },
     );
+    await this.emit("write", response.data.ids);
     return response.data.ids;
   }
 
@@ -85,6 +88,7 @@ class Nodb {
       ...rest,
       payload: [payload],
     });
+    await this.emit("write", id);
     return id!;
   }
 
@@ -99,6 +103,7 @@ class Nodb {
         ...(token && { headers: { token } }),
       },
     );
+    await this.emit("update", response.data.ids);
     return response.data.ids;
   }
 
@@ -110,6 +115,7 @@ class Nodb {
       ...rest,
       payload: [payload],
     });
+    await this.emit("update", id);
     return id!;
   }
 
@@ -117,14 +123,15 @@ class Nodb {
     props: BaseAPIProps & PatchRequestBody,
   ): Promise<string[]> {
     const { payload, token, ...urlProps } = props;
-    const request = await this.axios.put<{ ids: string[] }>(
+    const response = await this.axios.put<{ ids: string[] }>(
       this.generateUrl(urlProps),
       payload,
       {
         ...(token && { headers: { token } }),
       },
     );
-    return request.data.ids;
+    await this.emit("update", response.data.ids);
+    return response.data.ids;
   }
 
   async replaceEntity(
@@ -135,6 +142,7 @@ class Nodb {
       ...rest,
       payload: [payload],
     });
+    await this.emit("update", id);
     return id!;
   }
 
@@ -146,6 +154,7 @@ class Nodb {
         ...(token && { headers: { token } }),
       },
     );
+    await this.emit("delete", result.data.deleted);
     return result.data.deleted;
   }
 
@@ -157,6 +166,7 @@ class Nodb {
         ...(token && { headers: { token } }),
       },
     );
+    await this.emit("delete", result.data.deleted);
     return result.data.deleted;
   }
 
@@ -212,7 +222,7 @@ class Nodb {
         environmentDescription,
       },
     );
-
+    await this.emit("write", result.data);
     return result.data;
   }
 
@@ -228,7 +238,7 @@ class Nodb {
       },
       { ...(token && { headers: { token } }) },
     );
-
+    await this.emit("write", result.data);
     return result.data;
   }
 
@@ -242,7 +252,7 @@ class Nodb {
       `/apps/${appName}/${environmentName}`,
       { ...(token && { headers: { token } }) },
     );
-
+    await this.emit("delete", result.data.found);
     return result.data.found;
   }
 
@@ -255,7 +265,7 @@ class Nodb {
       `/apps/${appName}`,
       { ...(token && { headers: { token } }) },
     );
-
+    await this.emit("delete", result.data.found);
     return result.data.found;
   }
 
@@ -272,7 +282,7 @@ class Nodb {
       },
       { ...(token && { headers: { token } }) },
     );
-
+    await this.emit("write", result.data);
     return result.data;
   }
 
@@ -290,7 +300,7 @@ class Nodb {
       },
       { ...(token && { headers: { token } }) },
     );
-
+    await this.emit("write", result.data);
     return result.data;
   }
 
@@ -304,7 +314,7 @@ class Nodb {
       `/tokens/${appName}/${tokenToBeRevoked}`,
       { ...(token && { headers: { token } }) },
     );
-
+    await this.emit("delete", result.data.success);
     return result.data.success;
   }
 
@@ -319,7 +329,7 @@ class Nodb {
       `/tokens/${appName}/${envName}/${tokenToBeRevoked}`,
       { ...(token && { headers: { token } }) },
     );
-
+    await this.emit("delete", result.data.success);
     return result.data.success;
   }
 }
