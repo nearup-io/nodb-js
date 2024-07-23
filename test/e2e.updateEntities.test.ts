@@ -18,7 +18,7 @@ describe("Nodb update entities/entity tests", () => {
   let ids: string[] = [];
 
   beforeAll(async () => {
-    const result = await nodb.createAppWithEnvironmentAndGetTokens({
+    const result = await nodb.createApplication({
       appName,
       environmentName: envName,
     });

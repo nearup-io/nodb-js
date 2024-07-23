@@ -196,7 +196,7 @@ class Nodb extends NodbWebSocket {
     return result.data;
   }
 
-  async createAppWithEnvironmentAndGetTokens(
+  async createApplication(
     props: PostApplicationBody,
   ): Promise<PostApplicationResponse> {
     const {

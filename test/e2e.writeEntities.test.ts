@@ -17,7 +17,7 @@ describe("Nodb write entities/entity tests ", () => {
   const entityName = "testProject";
 
   beforeAll(async () => {
-    const result = await nodb.createAppWithEnvironmentAndGetTokens({
+    const result = await nodb.createApplication({
       appName,
       environmentName: envName,
     });
