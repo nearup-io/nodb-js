@@ -323,11 +323,12 @@ class Nodb extends NodbWebSocket {
     appName: string;
     envName?: string;
     token?: string;
+    socketBaseUrl?: string;
   }): void {
     this.connect({
       appName: props.appName,
       envName: props.envName,
-      baseUrl: this.baseUrl,
+      baseUrl: props.socketBaseUrl || this.baseUrl,
       token: props.token || this.token || "",
     });
   }
