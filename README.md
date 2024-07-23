@@ -9,6 +9,11 @@ The interface for processing JSON data is similar to standard CRUD operations, m
 2. [Getting Started](#getting-started)
 3. [Key Concepts](#key-concepts)
 4. [Usage](#usage)
+   1. [Creating Your First Application and Environment](#creating-your-first-application-and-environment)
+   2. [Working with Tokens](#working-with-tokens)
+   3. [Writing Entities](#writing-entities)
+   4. [Inquiring Data](#inquiring-data)
+   5. [WebSocket Support](#websocket-support)
 5. [API Reference](#api-reference)
 
 ## Installation
@@ -37,6 +42,17 @@ const nodb = new Nodb({
   baseUrl: "localhost:3000",
 });
 ```
+## Key Concepts
+
+NodbSDK works with the following hierarchical structure:
+
+- Application: The top-level container
+- Environments: Belong to an application
+- Entities: Belong to an environment
+
+One application can contain multiple environments, and each environment can contain multiple entities.
+
+## Usage
 ### Creating Your First Application and Environment
 
 To create your first application with an environment:
@@ -70,17 +86,8 @@ nodb.setToken(appToken);
 
 Alternatively, you can provide tokens individually for each method call. If both a global token and a method-specific token are provided, the method-specific token takes precedence.
 
-## Key Concepts
+### Writing Entities
 
-NodbSDK works with the following hierarchical structure:
-
-- Application: The top-level container
-- Environments: Belong to an application
-- Entities: Belong to an environment
-
-One application can contain multiple environments, and each environment can contain multiple entities.
-
-## Getting started
 Let's write our first entities. Prepare some data that you'll import:
 ```javascript
 // seed.ts
@@ -127,6 +134,8 @@ nodb.writeEntities({
 }).then(console.log); // get the ids
 ```
 
+### Inquiring Data
+
 Let's make a sample inquiry using .inquire method, useful for RAG applications:
 ```javascript
 const { answer } = await nodb.inquire({
@@ -147,6 +156,31 @@ The response returned from inquire method has the following definition:
   answer: "Finishing report has highest priority.";
 }
 ```
+### WebSocket Support
+
+Our SDK provides WebSocket support for monitoring write, update, and delete events on your Nodb API. You can easily connect to the WebSocket with the `connectToSocket` method:
+
+**Example usage:**
+
+```javascript
+nodb.connectToSocket({
+  appName: "your-app-name",
+  envName: "your-env-name", // Optional: Listen to all events for an application if omitted.
+  socketBaseUrl: "ws://localhost:3000", // Optional: If not provided, we automatically convert the base URL for you.
+  token: "yourToken" // Optional: If omitted, we use the previously provided token. An error will be thrown if no token is provided and none has been set before.
+})
+```
+
+Upon a successful connection, a message will appear in the console, indicating that you are now connected to the WebSocket. You will start receiving real-time updates about your application or environment.
+
+To close the WebSocket connection, simply call:
+
+```javascript
+nodb.disconnectFromSocket()
+```
+
+With these methods, you can seamlessly integrate WebSocket functionality into your application for real-time updates.
+
 ## Testing
 We are using jest to run e2e tests. You can run them with
 ```javascript
