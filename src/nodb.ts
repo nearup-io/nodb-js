@@ -19,9 +19,9 @@ import {
 } from "./types";
 import { NodbError } from "./errors";
 import axios, { Axios, AxiosError } from "axios";
-import NodbEventListener from "./nodb-event-listener";
+import NodbWebSocket from "./nodb-web-socket";
 
-class Nodb extends NodbEventListener {
+class Nodb extends NodbWebSocket {
   private readonly baseUrl: string;
   private readonly axios: Axios;
   private token?: string;

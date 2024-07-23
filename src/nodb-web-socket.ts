@@ -1,7 +1,7 @@
 import WebSocket from "ws";
 import { NodbError } from "./errors";
 
-class NodbEventListener {
+class NodbWebSocket {
   protected socket: WebSocket | undefined;
 
   protected connect(props: {
@@ -69,4 +69,4 @@ class NodbEventListener {
   }
 }
 
-export default NodbEventListener;
+export default NodbWebSocket;
