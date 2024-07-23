@@ -15,8 +15,11 @@ class NodbEventListener {
     }
     const envUrlPart = props.envName ? `/${props.envName}` : "";
 
+    const formattedBaseUrl = props.baseUrl
+      .replace("http:", "ws:")
+      .replace("https:", "wss:");
     this.socket = new WebSocket(
-      `ws://${props.baseUrl.replace("http://", "")}/ws/${props.appName}${envUrlPart}`,
+      `${formattedBaseUrl}/ws/${props.appName}${envUrlPart}`,
       {
         headers: {
           token: props.token,
