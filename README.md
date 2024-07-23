@@ -1,7 +1,7 @@
 # Nodb JS/TS
 
-Our service allows you to store and process unstructured JSON data in a unified database format. Our npm package ensures all data is transformed and stored both as JSON entities and their vector embedding representations, always in-sync.
-The interface for processing JSON data is similar to standard CRUD operations, making it easy to integrate. When you send an unstructured JSON payload via a POST request, the data is seamlessly written to the Nodb database. This integration allows you to query all your data using natural language immediately.
+Nodb NPM is a wrapper for [nodb API](https://github.com/nearup-io/nodb). It allows you to do CRUD operations over your Postgres database via API directly. Nodb keeps track of vector embeddings using pgvector so that you can do retrieval-augmented generation (RAG) using vector search.
+Nodb offers real-time updates using websockets by connecting to the Nodb API and subscribing to changes.
 
 ## Table of Contents
 
