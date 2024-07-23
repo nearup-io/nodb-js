@@ -61,7 +61,7 @@ class NodbEventListener {
     });
   }
 
-  public closeSocket() {
+  public disconnectFromSocket() {
     this.socket?.close();
   }
 }
