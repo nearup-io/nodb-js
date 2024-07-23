@@ -26,7 +26,6 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install --frozen-lockfile
-      - run: echo "The value of NPM_TOKEN is $NPM_TOKEN"
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
