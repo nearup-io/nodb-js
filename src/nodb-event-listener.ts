@@ -1,44 +1,68 @@
-import { EventName, EventListener } from "./types";
+import WebSocket from "ws";
+import { NodbError } from "./errors";
 
 class NodbEventListener {
-  protected listeners: Map<EventName, EventListener[]> = new Map();
+  protected socket: WebSocket | undefined;
 
-  protected async emit<T>(eventName: EventName, data: T): Promise<void> {
-    const eventListeners = this.listeners.get(eventName);
-    if (eventListeners) {
-      for (const listener of eventListeners) {
-        try {
-          await listener(data);
-        } catch (error) {
-          console.error(`Error in ${eventName} listener:`, error);
-        }
+  protected connect(props: {
+    baseUrl: string;
+    appName: string;
+    envName?: string;
+    token: string;
+  }) {
+    if (!props.token) {
+      throw new NodbError("Token is missing!");
+    }
+    const envUrlPart = props.envName ? `/${props.envName}` : "";
+
+    this.socket = new WebSocket(
+      `ws://${props.baseUrl.replace("http://", "")}/ws/${props.appName}${envUrlPart}`,
+      {
+        headers: {
+          token: props.token,
+        },
+      },
+    );
+
+    this.socket.on("open", () => {
+      console.log("Connected to socket");
+    });
+
+    this.socket.onerror = () => {
+      throw new NodbError(`Something went wrong with socket!`);
+    };
+
+    this.listenForMessages();
+  }
+
+  protected listenForMessages() {
+    this.socket?.on("message", (data) => {
+      const message = data.toString();
+      try {
+        const {
+          type,
+          appName,
+          envName,
+          data: messageData,
+        } = JSON.parse(message) as {
+          type: string;
+          appName: string;
+          envName: string;
+          data: any;
+        };
+        console.log(`Operation ${type.toUpperCase()}`);
+        console.log(
+          `Affected environment: ${JSON.stringify({ appName, envName }, null, 2)}`,
+        );
+        console.log(`Data: ${JSON.stringify(messageData, null, 2)}`);
+      } catch (err) {
+        console.error("Error parsing JSON:", err);
       }
-    }
+    });
   }
 
-  public on<T>(eventName: EventName, listener: EventListener<T>): void {
-    if (!this.listeners.has(eventName)) {
-      this.listeners.set(eventName, []);
-    }
-    this.listeners.get(eventName)!.push(listener);
-  }
-
-  public off<T>(eventName: EventName, listener: EventListener<T>): void {
-    const eventListeners = this.listeners.get(eventName);
-    if (eventListeners) {
-      const index = eventListeners.indexOf(listener);
-      if (index !== -1) {
-        eventListeners.splice(index, 1);
-      }
-    }
-  }
-
-  public offAll(eventName?: EventName): void {
-    if (eventName) {
-      this.listeners.delete(eventName);
-    } else {
-      this.listeners.clear();
-    }
+  public closeSocket() {
+    this.socket?.close();
   }
 }
 
