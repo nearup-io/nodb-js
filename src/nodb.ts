@@ -19,16 +19,19 @@ import {
 } from "./types";
 import { NodbError } from "./errors";
 import axios, { Axios, AxiosError } from "axios";
+import NodbEventListener from "./nodb-event-listener";
 
-class Nodb {
+class Nodb extends NodbEventListener {
   private readonly baseUrl: string;
   private readonly axios: Axios;
-
+  private token?: string;
   constructor({ token, baseUrl }: NodbConstructor) {
+    super();
     if (!baseUrl) {
       throw new NodbError("Missing one of the required dependencies!");
     }
     this.baseUrl = baseUrl;
+    this.token = token;
     this.axios = axios.create({
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +44,7 @@ class Nodb {
       (response) => response,
       (error: AxiosError) => {
         if (error.response && error.response.status >= 400) {
-          throw new NodbError(error.response.data as string);
+          throw new NodbError(JSON.stringify(error.response.data, null, 2));
         }
         return Promise.reject(error);
       },
@@ -60,6 +63,7 @@ class Nodb {
   }
 
   public setToken(token: string): void {
+    this.token = token;
     this.axios.defaults.headers.common.token = token;
   }
 
@@ -117,14 +121,14 @@ class Nodb {
     props: BaseAPIProps & PatchRequestBody,
   ): Promise<string[]> {
     const { payload, token, ...urlProps } = props;
-    const request = await this.axios.put<{ ids: string[] }>(
+    const response = await this.axios.put<{ ids: string[] }>(
       this.generateUrl(urlProps),
       payload,
       {
         ...(token && { headers: { token } }),
       },
     );
-    return request.data.ids;
+    return response.data.ids;
   }
 
   async replaceEntity(
@@ -212,7 +216,6 @@ class Nodb {
         environmentDescription,
       },
     );
-
     return result.data;
   }
 
@@ -228,7 +231,6 @@ class Nodb {
       },
       { ...(token && { headers: { token } }) },
     );
-
     return result.data;
   }
 
@@ -242,7 +244,6 @@ class Nodb {
       `/apps/${appName}/${environmentName}`,
       { ...(token && { headers: { token } }) },
     );
-
     return result.data.found;
   }
 
@@ -255,7 +256,6 @@ class Nodb {
       `/apps/${appName}`,
       { ...(token && { headers: { token } }) },
     );
-
     return result.data.found;
   }
 
@@ -272,7 +272,6 @@ class Nodb {
       },
       { ...(token && { headers: { token } }) },
     );
-
     return result.data;
   }
 
@@ -290,7 +289,6 @@ class Nodb {
       },
       { ...(token && { headers: { token } }) },
     );
-
     return result.data;
   }
 
@@ -304,7 +302,6 @@ class Nodb {
       `/tokens/${appName}/${tokenToBeRevoked}`,
       { ...(token && { headers: { token } }) },
     );
-
     return result.data.success;
   }
 
@@ -319,8 +316,20 @@ class Nodb {
       `/tokens/${appName}/${envName}/${tokenToBeRevoked}`,
       { ...(token && { headers: { token } }) },
     );
-
     return result.data.success;
+  }
+
+  connectToSocket(props: {
+    appName: string;
+    envName?: string;
+    token?: string;
+  }): void {
+    this.connect({
+      appName: props.appName,
+      envName: props.envName,
+      baseUrl: this.baseUrl,
+      token: props.token || this.token || "",
+    });
   }
 }
 
