@@ -1,4 +1,4 @@
-# Nodb JS/TS
+# Nodb JS/TS Sdk
 
 Nodb NPM is a wrapper for [nodb API](https://github.com/nearup-io/nodb). It allows you to do CRUD operations over your Postgres database via API directly. Nodb keeps track of vector embeddings using pgvector so that you can do retrieval-augmented generation (RAG) using vector search.
 Nodb offers real-time updates using websockets by connecting to the Nodb API and subscribing to changes.
@@ -24,7 +24,7 @@ Nodb supports both ESM and CommonJS modules, allowing you to integrate it seamle
 First install the NPM package (e.g. with npm, yarn, pnpm, bun):
 
 ```bash
-npm install nodb-js
+npm install nodb-js-sdk
 ```
 
 ## Getting Started
@@ -32,9 +32,9 @@ npm install nodb-js
 To begin using NodbSDK, import the Nodb class:
 
 ```typescript
-import Nodb from "nodb-js";
+import Nodb from "nodb-js-sdk";
 //OR
-const Nodb = require("nodb-js");
+const Nodb = require("nodb-js-sdk");
 ```
 If you're using import you should add "type": "module" to package.json.
 You need to create an instance of Nodb now:
