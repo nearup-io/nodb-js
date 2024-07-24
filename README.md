@@ -31,14 +31,14 @@ npm install nodb-js
 
 To begin using NodbSDK, import the Nodb class:
 
-```javascript
+```typescript
 import Nodb from "nodb-js";
 //OR
 const Nodb = require("nodb-js");
 ```
 If you're using import you should add "type": "module" to package.json.
 You need to create an instance of Nodb now:
-```javascript
+```typescript
 const nodb = new Nodb({
   baseUrl: "localhost:3000",
 });
@@ -58,7 +58,7 @@ One application can contain multiple environments, and each environment can cont
 
 To create your first application with an environment:
 
-```javascript
+```typescript
 const application = await nodb.createAppWithEnvironmentAndGetTokens({
   appName: "your-application-name",
   environmentName: "your-environment-name",
@@ -69,7 +69,7 @@ const application = await nodb.createAppWithEnvironmentAndGetTokens({
 
 After creating an application, you'll receive tokens for both the application and the environment:
 
-```javascript
+```typescript
 // Token for your application (broader permission scope)
 const appToken = application.applicationTokens[0].key;
 
@@ -81,7 +81,7 @@ const envToken = application.environmentTokens[0].key;
 
 You can set a token globally for all subsequent operations:
 
-```javascript
+```typescript
 nodb.setToken(appToken);
 ```
 
@@ -90,7 +90,7 @@ Alternatively, you can provide tokens individually for each method call. If both
 ### Writing Entities
 
 Let's write our first entities. Prepare some data that you'll import:
-```javascript
+```typescript
 // seed.ts
 type Todo = {
   task: string;
@@ -116,7 +116,7 @@ const todos:Todo[] = [
 ```
 
 Writing entities is done using writeEntities method for example using todos entity:
-```javascript
+```typescript
 const ids = await nodb.writeEntities({
   appName: "your-application-name",
   environmentName: "your-environment-name",
@@ -126,7 +126,7 @@ const ids = await nodb.writeEntities({
 ```
 
 Or with then/catch:
-```javascript
+```typescript
 nodb.writeEntities({
   appName: "your-application-name",
   environmentName: "your-environment-name",
@@ -138,7 +138,7 @@ nodb.writeEntities({
 ### Inquiring Data
 
 Let's make a sample inquiry using .inquire method, useful for RAG applications:
-```javascript
+```typescript
 const { answer } = await nodb.inquire({
   appName: "your-application-name",
   environmentName: "your-environment-name",
@@ -152,7 +152,7 @@ nodb.inquire({
 }).then(console.log);
 ```
 The response returned from inquire method has the following definition:
-```javascript
+```typescript
 {
   answer: "Finishing report has highest priority.";
 }
@@ -163,7 +163,7 @@ Our SDK provides WebSocket support for monitoring write, update, and delete even
 
 **Example usage:**
 
-```javascript
+```typescript
 nodb.connectToSocket({
   appName: "your-app-name",
   envName: "your-env-name", // Optional: Listen to all events for an application if omitted.
@@ -176,7 +176,7 @@ Upon a successful connection, a message will appear in the console, indicating t
 
 To close the WebSocket connection, simply call:
 
-```javascript
+```typescript
 nodb.disconnectFromSocket()
 ```
 
@@ -184,11 +184,157 @@ With these methods, you can seamlessly integrate WebSocket functionality into yo
 
 ## Testing
 We are using jest to run e2e tests. You can run them with
-```javascript
+```typescript
 npm run test
 ```
 For testing we have a .env.test file where the only env variable that is specified is:
-```javascript
+```typescript
 NODB_BASE_URL=
 ```
 
+## Api Reference
+The `Nodb` class provides methods for interacting with a NoDB (NoSQL Database) backend via HTTP and WebSocket connections. It extends the `NodbWebSocket` class to support WebSocket functionality.
+
+### Constructor
+
+```typescript
+constructor({ token, baseUrl }: NodbConstructor)
+```
+
+- **Parameters:**
+  - `token` (optional, `string`): Authentication token for API requests.
+  - `baseUrl` (`string`): Base URL for the API endpoints.
+
+### Methods
+
+#### `setToken`
+
+```typescript
+setToken(token: string): void
+```
+
+#### `writeEntities`
+
+```typescript
+async writeEntities(props: BaseAPIProps & PostEntityRequestBody): Promise<string[]>
+```
+
+#### `writeEntity`
+
+```typescript
+async writeEntity(props: BaseAPIProps & { payload: EntityBody }): Promise<string>
+```
+
+#### `updateEntities`
+
+```typescript
+async updateEntities(props: BaseAPIProps & PatchRequestBody): Promise<string[]>
+```
+
+#### `updateEntity`
+
+```typescript
+async updateEntity(props: BaseAPIProps & { payload: EntityBodyWithId }): Promise<string>
+```
+
+#### `replaceEntities`
+
+```typescript
+async replaceEntities(props: BaseAPIProps & PatchRequestBody): Promise<string[]>
+```
+
+#### `replaceEntity`
+
+```typescript
+async replaceEntity(props: BaseAPIProps & { payload: EntityBodyWithId }): Promise<string>
+```
+
+#### `deleteEntities`
+
+```typescript
+async deleteEntities(props: BaseAPIProps): Promise<number>
+```
+
+#### `deleteEntity`
+
+```typescript
+async deleteEntity(props: BaseAPIProps & EntityId): Promise<boolean>
+```
+
+#### `getEntity`
+
+```typescript
+async getEntity(props: BaseAPIProps & EntityId): Promise<Entity>
+```
+
+#### `getEntities`
+
+```typescript
+async getEntities(props: BaseAPIProps): Promise<EntityResponse>
+```
+
+#### `inquire`
+
+```typescript
+async inquire(props: Inquiry & Pick<BaseAPIProps, "appName" | "envName" | "token">): Promise<{ answer: string }>
+```
+
+#### `createApplication`
+
+```typescript
+async createApplication(props: PostApplicationBody): Promise<PostApplicationResponse>
+```
+
+#### `createEnvironmentInApp`
+
+```typescript
+async createEnvironmentInApp(props: PostEnvironmentBody): Promise<PostEnvironmentResponse>
+```
+
+#### `deleteEnvironmentFromApp`
+
+```typescript
+async deleteEnvironmentFromApp(props: { appName: string; environmentName: string; token?: string }): Promise<boolean>
+```
+
+#### `deleteApplication`
+
+```typescript
+async deleteApplication(props: { appName: string; token?: string }): Promise<boolean>
+```
+
+#### `createApplicationToken`
+
+```typescript
+async createApplicationToken(props: { appName: string; permission: TokenPermissions; token?: string }): Promise<PostApplicationTokenResponse>
+```
+
+#### `createEnvironmentToken`
+
+```typescript
+async createEnvironmentToken(props: { appName: string; envName: string; permission: TokenPermissions; token?: string }): Promise<PostEnvironmentTokenResponse>
+```
+
+#### `revokeApplicationToken`
+
+```typescript
+async revokeApplicationToken(props: { appName: string; tokenToBeRevoked: string; token?: string }): Promise<boolean>
+```
+
+#### `revokeEnvironmentToken`
+
+```typescript
+async revokeEnvironmentToken(props: { appName: string; envName: string; tokenToBeRevoked: string; token?: string }): Promise<boolean>
+```
+
+#### `connectToSocket`
+
+```typescript
+connectToSocket(props: { appName: string; envName?: string; token?: string; socketBaseUrl?: string }): void
+```
+
+#### `disconnectFromSocket`
+
+```typescript
+disconnectFromSocket(): void
+```
