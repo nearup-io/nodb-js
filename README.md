@@ -14,7 +14,8 @@ Nodb offers real-time updates using websockets by connecting to the Nodb API and
    3. [Writing Entities](#writing-entities)
    4. [Inquiring Data](#inquiring-data)
    5. [WebSocket Support](#websocket-support)
-5. [API Reference](#api-reference)
+5. [Testing](#testing)
+6. [API Reference](#api-reference)
 
 ## Installation
 
