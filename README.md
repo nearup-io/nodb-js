@@ -59,7 +59,7 @@ One application can contain multiple environments, and each environment can cont
 To create your first application with an environment:
 
 ```typescript
-const application = await nodb.createAppWithEnvironmentAndGetTokens({
+const application = await nodb.createApplication({
   appName: "your-application-name",
   environmentName: "your-environment-name",
 });
