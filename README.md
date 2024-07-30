@@ -40,7 +40,7 @@ If you're using import you should add "type": "module" to package.json.
 You need to create an instance of Nodb now:
 ```typescript
 const nodb = new Nodb({
-  baseUrl: "localhost:3000",
+  baseUrl: "http://localhost:3000",
 });
 ```
 ## Key Concepts
