@@ -61,7 +61,7 @@ To create your first application with an environment:
 ```typescript
 const application = await nodb.createAppWithEnvironmentAndGetTokens({
   appName: "your-application-name",
-  environmentName: "your-environment-name",
+  envName: "your-environment-name",
 });
 ```
 
@@ -119,7 +119,7 @@ Writing entities is done using writeEntities method for example using todos enti
 ```typescript
 const ids = await nodb.writeEntities({
   appName: "your-application-name",
-  environmentName: "your-environment-name",
+  envName: "your-environment-name",
   entityName: "your-entity-name",
   payload: todos
 });
@@ -129,7 +129,7 @@ Or with then/catch:
 ```typescript
 nodb.writeEntities({
   appName: "your-application-name",
-  environmentName: "your-environment-name",
+  envName: "your-environment-name",
   entityName: "your-entity-name",
   payload: todos
 }).then(console.log); // get the ids
@@ -141,13 +141,13 @@ Let's make a sample inquiry using .inquire method, useful for RAG applications:
 ```typescript
 const { answer } = await nodb.inquire({
   appName: "your-application-name",
-  environmentName: "your-environment-name",
+  envName: "your-environment-name",
   inquiry: "Which todo has highest priority?",
 });
 //Or
 nodb.inquire({
   appName: "your-application-name",
-  environmentName: "your-environment-name",
+  envName: "your-environment-name",
   inquiry: "Which todo has highest priority?",
 }).then(console.log);
 ```
@@ -294,7 +294,7 @@ async createEnvironmentInApp(props: PostEnvironmentBody): Promise<PostEnvironmen
 #### `deleteEnvironmentFromApp`
 
 ```typescript
-async deleteEnvironmentFromApp(props: { appName: string; environmentName: string; token?: string }): Promise<boolean>
+async deleteEnvironmentFromApp(props: { appName: string; envName: string; token?: string }): Promise<boolean>
 ```
 
 #### `deleteApplication`

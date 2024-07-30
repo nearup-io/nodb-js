@@ -63,8 +63,8 @@ export type PostApplicationBody = {
   appName: string;
   appDescription?: string;
   appImage?: string;
-  environmentName?: string;
-  environmentDescription?: string;
+  envName?: string;
+  envDescription?: string;
 };
 
 export type PostEnvironmentResponse = {
@@ -77,7 +77,7 @@ export type PostEnvironmentResponse = {
 
 export type PostEnvironmentBody = {
   appName: string;
-  environmentName: string;
+  envName: string;
   description?: string;
   token?: string;
 };

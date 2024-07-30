@@ -21,7 +21,7 @@ describe("Nodb get entities/entity tests", () => {
   beforeAll(async () => {
     const result = await nodb.createApplication({
       appName,
-      environmentName: envName,
+      envName,
     });
 
     nodb.setToken(result.applicationTokens[0]!.key);

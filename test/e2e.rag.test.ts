@@ -17,7 +17,7 @@ describe("Nodb rag entities tests ", () => {
   beforeAll(async () => {
     const result = await nodb.createApplication({
       appName,
-      environmentName: envName,
+      envName,
     });
 
     nodb.setToken(result.applicationTokens[0]!.key);

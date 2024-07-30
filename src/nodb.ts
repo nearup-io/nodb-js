@@ -199,21 +199,16 @@ class Nodb extends NodbWebSocket {
   async createApplication(
     props: PostApplicationBody,
   ): Promise<PostApplicationResponse> {
-    const {
-      appName,
-      appImage,
-      appDescription,
-      environmentDescription,
-      environmentName,
-    } = props;
+    const { appName, appImage, appDescription, envDescription, envName } =
+      props;
 
     const result = await this.axios.post<PostApplicationResponse>(
       `/apps/${appName}`,
       {
         image: appImage,
         description: appDescription,
-        environmentName,
-        environmentDescription,
+        envName,
+        envDescription,
       },
     );
     return result.data;
@@ -222,10 +217,10 @@ class Nodb extends NodbWebSocket {
   async createEnvironmentInApp(
     props: PostEnvironmentBody,
   ): Promise<PostEnvironmentResponse> {
-    const { appName, description, environmentName, token } = props;
+    const { appName, description, envName, token } = props;
 
     const result = await this.axios.post<PostEnvironmentResponse>(
-      `/apps/${appName}/${environmentName}`,
+      `/apps/${appName}/${envName}`,
       {
         description,
       },
@@ -236,12 +231,12 @@ class Nodb extends NodbWebSocket {
 
   async deleteEnvironmentFromApp(props: {
     appName: string;
-    environmentName: string;
+    envName: string;
     token?: string;
   }): Promise<boolean> {
-    const { appName, environmentName, token } = props;
+    const { appName, envName, token } = props;
     const result = await this.axios.delete<{ found: boolean }>(
-      `/apps/${appName}/${environmentName}`,
+      `/apps/${appName}/${envName}`,
       { ...(token && { headers: { token } }) },
     );
     return result.data.found;
