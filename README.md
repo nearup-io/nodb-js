@@ -40,7 +40,7 @@ If you're using import you should add "type": "module" to package.json.
 You need to create an instance of Nodb now:
 ```typescript
 const nodb = new Nodb({
-  baseUrl: "localhost:3000",
+  baseUrl: "http://localhost:3000",
 });
 ```
 ## Key Concepts
@@ -59,7 +59,7 @@ One application can contain multiple environments, and each environment can cont
 To create your first application with an environment:
 
 ```typescript
-const application = await nodb.createAppWithEnvironmentAndGetTokens({
+const application = await nodb.createApplication({
   appName: "your-application-name",
   envName: "your-environment-name",
 });
@@ -192,7 +192,7 @@ For testing we have a .env.test file where the only env variable that is specifi
 NODB_BASE_URL=
 ```
 
-## Api Reference
+## API Reference
 The `Nodb` class provides methods for interacting with a NoDB (NoSQL Database) backend via HTTP and WebSocket connections. It extends the `NodbWebSocket` class to support WebSocket functionality.
 
 ### Constructor
