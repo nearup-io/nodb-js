@@ -1,5 +1,11 @@
 # nodb-js
 
+## 0.1.3
+
+### Patch Changes
+
+- 0112a8c: Update readme
+
 ## 0.1.2
 
 ### Patch Changes

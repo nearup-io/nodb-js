@@ -1,6 +1,6 @@
 {
   "name": "nodb-js-sdk",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "changeset": "changeset",
   "description": "Nodb API",
   "homepage": "https://github.com/nearup-io/nodb-js",
