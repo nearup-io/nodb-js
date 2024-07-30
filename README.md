@@ -192,7 +192,7 @@ For testing we have a .env.test file where the only env variable that is specifi
 NODB_BASE_URL=
 ```
 
-## Api Reference
+## API Reference
 The `Nodb` class provides methods for interacting with a NoDB (NoSQL Database) backend via HTTP and WebSocket connections. It extends the `NodbWebSocket` class to support WebSocket functionality.
 
 ### Constructor
