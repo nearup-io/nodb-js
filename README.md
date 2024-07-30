@@ -64,6 +64,7 @@ const application = await nodb.createApplication({
   envName: "your-environment-name",
 });
 ```
+If you don't specify an **envName** a default environment is created for you called `dev`.
 
 ### Working with Tokens
 
