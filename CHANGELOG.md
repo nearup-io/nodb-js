@@ -1,5 +1,11 @@
 # nodb-js
 
+## 0.1.2
+
+### Patch Changes
+
+- 9c0ee19: Updated interfaces for Nodb
+
 ## 0.1.1
 
 ### Patch Changes
